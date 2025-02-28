@@ -1,41 +1,16 @@
 [build]
   base = "frontend/"
   publish = "out"
-  command = "chmod +x netlify-build.sh && ./netlify-build.sh"
+  command = "npm ci && npm run build && mkdir -p out && find .next -type f -name '*.html' -exec cp {} out/ \\; && mkdir -p out/_next && cp -r .next/static out/_next/ || true"
 
 [build.environment]
-  # Node configuration
   NODE_VERSION = "18.17.0"
-  NPM_FLAGS = "--no-package-lock --no-audit --prefer-offline --no-fund --legacy-peer-deps"
-  
-  # Completely disable Python - not needed for Next.js
-  PYTHON_VERSION = ""
-  
-  # Disable Go
-  GO_VERSION = ""
-  
-  # Eliminate the use of mise
-  MISE_DISABLE = "1"
-  MISE_GLOBAL_CONFIG_FILE = "/dev/null"
-  
-  # Force binary modules to rebuild
-  NPM_FORCE_RESOLUTIONS = "true"
-  
-  # Skip Next.js plugin since we're handling it manually
-  NETLIFY_NEXT_PLUGIN_SKIP = "true"
-  
-  # Set NODE_ENV
   NODE_ENV = "production"
-  
-  # Add build flags for Next.js
-  NEXT_TELEMETRY_DISABLED = "1"
-  
-  # Add cache control
-  NETLIFY_USE_YARN = "false"
   NPM_CONFIG_LEGACY_PEER_DEPS = "true"
-  
-  # Enable debug output
-  NETLIFY_BUILD_DEBUG = "true"
+  # Disable everything else
+  PYTHON_VERSION = "disabled"
+  SKIP_MISE = "true"
+  NETLIFY_USE_YARN = "false"
 
 # Try to bypass cache issues
 [build.processing]
@@ -46,7 +21,6 @@
   from = "/*"
   to = "/index.html"
   status = 200
-  force = false
 
 # Proper API redirects if needed
 [[redirects]]
