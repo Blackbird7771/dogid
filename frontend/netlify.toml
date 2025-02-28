@@ -7,8 +7,6 @@
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
   NODE_VERSION = "18"
   NPM_FLAGS = "--no-package-lock --no-audit"
-  # Explicitly disable Python
-  PYTHON_VERSION = "off"
   
 # Try to bypass cache issues
 [build.processing]
