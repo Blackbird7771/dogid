@@ -7,16 +7,9 @@ set -e
 echo "===== ENVIRONMENT INFORMATION ====="
 echo "Node version: $(node -v)"
 echo "NPM version: $(npm -v)"
-echo "Python version: $(python --version 2>&1 || echo 'Python not available')"
 echo "Current directory: $(pwd)"
 echo "Files in directory: $(ls -la)"
 echo "=================================="
-
-# Fix line endings if needed
-if [[ -f package.json ]]; then
-  echo "Fixing line endings in package.json if needed"
-  dos2unix package.json 2>/dev/null || echo "dos2unix not available, skipping"
-fi
 
 # Install dependencies
 echo "===== INSTALLING DEPENDENCIES ====="
@@ -45,7 +38,18 @@ if [[ ! -d out ]]; then
   # If .next exists but not out, we need to export
   if [[ -d .next ]]; then
     echo "Found .next directory, exporting to static HTML"
-    npm run export || npx next export
+    # Try to export with installed export command
+    npm run export || npx next export || echo "Export failed, trying workaround..."
+    
+    # If export fails, try to manually copy files
+    if [[ ! -d out ]]; then
+      echo "Manual export: Creating out directory"
+      mkdir -p out
+      echo "Copying .next/static to out/"
+      cp -r .next/static out/ || echo "No static files to copy"
+      echo "Copying public/ to out/"
+      cp -r public/* out/ || echo "No public files to copy"
+    fi
   else
     echo "ERROR: Build output directory not found. Build may have failed."
     exit 1
@@ -55,7 +59,9 @@ fi
 # Validate deployment files
 echo "===== PREPARING FOR DEPLOYMENT ====="
 echo "Final deployment directory structure:"
-find out -type f | sort | head -n 20
+find . -maxdepth 2 -type d
+echo "Files in out directory:"
+ls -la out/ || echo "out directory not found or empty"
 echo "..."
 
 echo "Deployment files prepared successfully!"

@@ -2,15 +2,14 @@
   base = "frontend/"
   publish = "out"
   command = "chmod +x netlify-build.sh && ./netlify-build.sh"
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ./frontend/"
 
 [build.environment]
   # Node configuration
   NODE_VERSION = "18.17.0"
   NPM_FLAGS = "--no-package-lock --no-audit --prefer-offline --no-fund"
   
-  # Python configuration - set to a specific working version
-  PYTHON_VERSION = "3.9.18"
+  # Disable Python instead of trying to install a specific version
+  PYTHON_VERSION = "off"
   
   # Disable Go
   GO_VERSION = ""
