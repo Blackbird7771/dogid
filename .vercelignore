@@ -1,0 +1,12 @@
+# Ignore everything except frontend
+/backend
+/data
+/docs
+/scripts
+README.md
+.gitignore
+.git
+# Don't ignore these
+!frontend
+!package.json
+!vercel.json 
