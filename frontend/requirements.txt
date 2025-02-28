@@ -1,2 +1,2 @@
-# Empty requirements file
-# This is present to satisfy Python dependency checks in the build system 
+# This file intentionally left empty
+# No Python dependencies are required for this Next.js frontend 
