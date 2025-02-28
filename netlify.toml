@@ -8,6 +8,9 @@
   NODE_VERSION = "18"
   NPM_FLAGS = "--legacy-peer-deps"
   PYTHON_ENABLE = "0"
+  PYTHON_VERSION = "system"
+  NETLIFY_USE_MISE = "false"
 
-[[plugins]]
-  package = "./frontend/netlify-plugin-cache-clear" 
+# Remove all plugins to avoid any Python dependencies
+# [[plugins]]
+#  package = "./frontend/netlify-plugin-cache-clear" 
