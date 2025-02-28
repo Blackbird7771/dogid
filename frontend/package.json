@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "export": "next export",
+    "export": "next export || echo 'Export command not needed with Next.js 13+'",
     "netlify-build": "npm run build && npm run export"
   },
   "dependencies": {
