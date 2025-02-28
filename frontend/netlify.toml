@@ -11,6 +11,8 @@
   GO_VERSION = ""
   # Skip mise (the problematic tool)
   MISE_GLOBAL_CONFIG_FILE = "/dev/null"
+  # Environment variable to force re-compilation of binary modules
+  NPM_FORCE_RESOLUTIONS = "true"
   
 # Try to bypass cache issues
 [build.processing]
