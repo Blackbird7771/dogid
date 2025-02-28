@@ -7,14 +7,24 @@ set -e
 echo "===== ENVIRONMENT INFORMATION ====="
 echo "Node version: $(node -v)"
 echo "NPM version: $(npm -v)"
-echo "Python version (if available): $(python --version 2>&1 || echo 'Python not found')"
+echo "Checking Python version..."
+python_version=$(python --version 2>&1 || echo "Python not found")
+echo "Python version: $python_version"
 echo "Current directory: $(pwd)"
 echo "Files in directory: $(ls -la)"
 echo "=================================="
 
-# Skip Python setup entirely - not needed for Next.js frontend
-echo "===== SKIPPING PYTHON SETUP (NOT NEEDED) ====="
-echo "This is a Next.js frontend project, no Python required"
+# Explicitly verify Python version
+echo "===== PYTHON VERSION CHECK ====="
+if [[ "$python_version" == *"3.10.16"* ]]; then
+  echo "Correct Python version 3.10.16 detected"
+elif [[ "$python_version" == *"Python"* ]]; then
+  echo "Warning: Python version is $python_version, expected 3.10.16"
+  echo "Continuing anyway as this is a Next.js project that doesn't require Python"
+else
+  echo "Python not detected. This is a Next.js project, so Python is not strictly required."
+  echo "Continuing with build..."
+fi
 echo "=================================="
 
 # Install dependencies
@@ -42,13 +52,15 @@ echo "=================================="
 
 # Ensure output directory exists (Next.js 13+ puts it in .next/standalone)
 echo "===== CHECKING OUTPUT DIRECTORY ====="
+mkdir -p out
 if [[ -d .next/standalone ]]; then
   echo "Found standalone output in .next/standalone"
-  mkdir -p out
   cp -r .next/standalone/* out/
-elif [[ ! -d out ]]; then
-  echo "Creating output directory (needed for newer Next.js versions)"
-  mkdir -p out
+elif [[ -d .next/export ]]; then
+  echo "Found export output in .next/export"
+  cp -r .next/export/* out/
+else
+  echo "Using standard Next.js export"
   npm run export || npx next export || echo "Export not required for newer Next.js versions"
 fi
 echo "=================================="
@@ -57,6 +69,13 @@ echo "=================================="
 echo "===== PREPARING FOR DEPLOYMENT ====="
 echo "Files in out directory:"
 ls -la out/ || echo "No files found in out directory"
+
+# If no files in out, try to copy from .next
+if [ ! "$(ls -A out 2>/dev/null)" ]; then
+  echo "No files found in out directory. Attempting to copy from .next..."
+  mkdir -p out
+  cp -r .next/* out/ 2>/dev/null || echo "No files to copy from .next"
+fi
 
 echo "Deployment files prepared successfully!"
 echo "===================================" 
