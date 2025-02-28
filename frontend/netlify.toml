@@ -1,12 +1,16 @@
 [build]
   base = "frontend/"
   publish = ".next"
-  command = "npm run build"
+  command = "chmod +x netlify-build.sh && ./netlify-build.sh"
 
 [build.environment]
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
   NODE_VERSION = "18"
   NPM_FLAGS = "--no-package-lock --no-audit"
+  # Explicitly set Go version to avoid installation issues
+  GO_VERSION = ""
+  # Skip mise (the problematic tool)
+  MISE_GLOBAL_CONFIG_FILE = "/dev/null"
   
 # Try to bypass cache issues
 [build.processing]
