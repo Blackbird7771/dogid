@@ -1,29 +1,16 @@
+# Basic build settings
 [build]
-  base = "frontend/"
-  publish = "out"
-  command = "npm install --legacy-peer-deps && npm run build && npx next export || (mkdir -p out && cp -r .next/static out/_next/ 2>/dev/null || true)"
+  base = \
+frontend/\
+  publish = \
+out\
+  command = "npm install --no-optional && npm run build"
 
 [build.environment]
   NODE_VERSION = "18.17.0"
   NODE_ENV = "production"
-  NPM_CONFIG_LEGACY_PEER_DEPS = "true"
-  NETLIFY_USE_YARN = "false"
-  # Disable Python to avoid version issues
-  PYTHON_VERSION = "disabled"
-  SKIP_MISE = "true"
 
-# Try to bypass cache issues
-[build.processing]
-  skip_processing = true
-
-# Handle 404s correctly
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-# Proper API redirects if needed
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/api/:splat"
-  status = 200 
