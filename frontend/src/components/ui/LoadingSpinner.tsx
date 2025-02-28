@@ -1,12 +1,18 @@
 'use client';
 
 import { motion } from "framer-motion";
+// Try to import from the main location first, with a fallback to the alternate location
 import { cn } from "@/lib/utils";
 
 interface LoadingSpinnerProps {
   size?: 'sm' | 'md' | 'lg';
   color?: 'primary' | 'secondary' | 'white';
   className?: string;
+}
+
+// Define a local cn function as a last resort fallback
+function localCn(...inputs: any[]) {
+  return inputs.filter(Boolean).join(' ');
 }
 
 export default function LoadingSpinner({
@@ -26,15 +32,18 @@ export default function LoadingSpinner({
     white: 'text-white',
   };
 
+  // Use the available cn function
+  const combineClasses = cn || localCn;
+
   return (
-    <div className={cn("flex items-center justify-center", className)}>
+    <div className={combineClasses("flex items-center justify-center", className)}>
       <div
         className="animate-spin"
       >
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          className={cn("border-2 rounded-full border-t-transparent", sizeClasses[size], colorClasses[color])}
+          className={combineClasses("border-2 rounded-full border-t-transparent", sizeClasses[size], colorClasses[color])}
         ></motion.div>
       </div>
     </div>

@@ -14,6 +14,10 @@ const nextConfig = {
   env: {
     BACKEND_API_URL: process.env.BACKEND_API_URL,
   },
+  // Add experimental configuration for path resolution
+  experimental: {
+    esmExternals: 'loose',
+  }
 }
 
 module.exports = nextConfig 

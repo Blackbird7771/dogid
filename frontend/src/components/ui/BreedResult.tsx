@@ -15,6 +15,11 @@ interface BreedResultProps {
   isLoading?: boolean;
 }
 
+// Define a local formatConfidence function
+function formatConfidence(confidence: number) {
+  return (confidence * 100).toFixed(1) + '%';
+}
+
 export default function BreedResult({
   topPrediction,
   alternativePredictions,
@@ -38,10 +43,6 @@ export default function BreedResult({
       </div>
     );
   }
-
-  const formatConfidence = (confidence: number) => {
-    return (confidence * 100).toFixed(1) + '%';
-  };
 
   return (
     <motion.div
