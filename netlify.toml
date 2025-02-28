@@ -6,12 +6,7 @@
 [build.environment]
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
   NODE_VERSION = "18"
-  PYTHON_VERSION = "3.9"  # Setting a stable Python version compatible with Go
+  PYTHON_VERSION = "3.9"
 
 [[plugins]]
-  package = "@netlify/plugin-nextjs"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200 
+  package = "@netlify/plugin-nextjs" 

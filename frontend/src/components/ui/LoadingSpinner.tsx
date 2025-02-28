@@ -10,7 +10,7 @@ interface LoadingSpinnerProps {
 }
 
 export default function LoadingSpinner({
-  size = 'md',
+  size = 'md', 
   color = 'primary',
   className,
 }: LoadingSpinnerProps) {
@@ -28,11 +28,15 @@ export default function LoadingSpinner({
 
   return (
     <div className={cn("flex items-center justify-center", className)}>
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-        className={cn("border-2 rounded-full border-t-transparent", sizeClasses[size], colorClasses[color])}
-      ></motion.div>
+      <div
+        className="animate-spin"
+      >
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className={cn("border-2 rounded-full border-t-transparent", sizeClasses[size], colorClasses[color])}
+        ></motion.div>
+      </div>
     </div>
   );
 } 
