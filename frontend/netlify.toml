@@ -4,31 +4,33 @@
   command = "chmod +x netlify-build.sh && ./netlify-build.sh"
 
 [build.environment]
-  NETLIFY_NEXT_PLUGIN_SKIP = "true"
-  NODE_VERSION = "18"
-  NPM_FLAGS = "--no-package-lock --no-audit"
-  # Explicitly set Go version to avoid installation issues
+  # Node configuration
+  NODE_VERSION = "18.17.0"
+  NPM_FLAGS = "--no-package-lock --no-audit --prefer-offline --no-fund"
+  
+  # Python configuration - set to a specific working version
+  PYTHON_VERSION = "3.9.18"
+  
+  # Disable Go
   GO_VERSION = ""
-  # Skip mise (the problematic tool)
+  
+  # Eliminate the use of mise
+  MISE_DISABLE = "1"
   MISE_GLOBAL_CONFIG_FILE = "/dev/null"
-  # Environment variable to force re-compilation of binary modules
+  
+  # Force binary modules to rebuild
   NPM_FORCE_RESOLUTIONS = "true"
+  
+  # Skip Next.js plugin since we're handling it manually
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
   
 # Try to bypass cache issues
 [build.processing]
   skip_processing = true
 
-# Force clear cache for builds
+# Use only essential plugins
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-# Add a build plugin to clear cache
-[[plugins]]
-  package = "netlify-plugin-cache-busting"
-
-# Use our custom cache-clearing plugin
-[[plugins]]
-  package = "./netlify-plugin-cache-clear.js"
 
 [[redirects]]
   from = "/api/*"
