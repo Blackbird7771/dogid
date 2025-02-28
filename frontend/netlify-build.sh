@@ -18,10 +18,25 @@ touch requirements.txt
 echo "Python environment prepared"
 echo "=================================="
 
+# Clear npm cache to avoid issues
+echo "===== CLEARING NPM CACHE ====="
+npm cache clean --force || echo "Cache cleaning failed, continuing..."
+echo "=================================="
+
 # Install dependencies
 echo "===== INSTALLING DEPENDENCIES ====="
 export NODE_ENV=production
-npm ci --no-audit --no-fund
+export NPM_CONFIG_LEGACY_PEER_DEPS=true
+
+# First try with regular install
+echo "Trying standard npm ci..."
+npm ci --no-audit --no-fund || (
+  echo "Standard npm ci failed, trying with legacy peer deps..."
+  npm ci --legacy-peer-deps --no-audit --no-fund || (
+    echo "npm ci failed, falling back to npm install..."
+    npm install --no-audit --no-fund --production=false
+  )
+)
 echo "Dependencies installed successfully!"
 echo "=================================="
 
@@ -29,6 +44,11 @@ echo "=================================="
 echo "===== INSTALLING SHARP PACKAGE ====="
 npm install --no-save sharp@0.33.2
 echo "Sharp package installed successfully!"
+echo "=================================="
+
+# List installed packages for debugging
+echo "===== INSTALLED PACKAGES ====="
+npm list --depth=0
 echo "=================================="
 
 # Build the Next.js app
@@ -56,6 +76,8 @@ if [[ ! -d out ]]; then
       cp -r .next/static out/ || echo "No static files to copy"
       echo "Copying public/ to out/"
       cp -r public/* out/ || echo "No public files to copy"
+      echo "Creating index.html if missing"
+      touch out/index.html
     fi
   else
     echo "ERROR: Build output directory not found. Build may have failed."

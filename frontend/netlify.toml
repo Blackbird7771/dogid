@@ -6,7 +6,7 @@
 [build.environment]
   # Node configuration
   NODE_VERSION = "18.17.0"
-  NPM_FLAGS = "--no-package-lock --no-audit --prefer-offline --no-fund"
+  NPM_FLAGS = "--no-package-lock --no-audit --prefer-offline --no-fund --legacy-peer-deps"
   
   # Set to a stable, known Python version
   PYTHON_VERSION = "3.8"
@@ -30,13 +30,18 @@
   # Add build flags for Next.js
   NEXT_TELEMETRY_DISABLED = "1"
   
+  # Add cache control
+  NETLIFY_USE_YARN = "false"
+  NPM_CONFIG_LEGACY_PEER_DEPS = "true"
+  
 # Try to bypass cache issues
 [build.processing]
   skip_processing = true
 
-# Use only essential plugins
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+# Control the build cache
+[build.environment.NETLIFY_BUILD_DEBUG]
+  command = "true"  # Enable verbose build output
+  dependency = "true"  # Enable dependency debugging
 
 # Handle 404s correctly
 [[redirects]]
