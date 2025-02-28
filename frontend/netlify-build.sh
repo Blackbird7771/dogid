@@ -7,8 +7,15 @@ set -e
 echo "===== ENVIRONMENT INFORMATION ====="
 echo "Node version: $(node -v)"
 echo "NPM version: $(npm -v)"
+echo "Python version: $(python --version 2>&1 || echo 'Python not available')"
 echo "Current directory: $(pwd)"
 echo "Files in directory: $(ls -la)"
+echo "=================================="
+
+# Create empty Python requirements if needed
+echo "===== SETTING UP PYTHON ENVIRONMENT ====="
+touch requirements.txt
+echo "Python environment prepared"
 echo "=================================="
 
 # Install dependencies
