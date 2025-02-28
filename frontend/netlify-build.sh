@@ -7,13 +7,21 @@ set -e
 echo "===== ENVIRONMENT INFORMATION ====="
 echo "Node version: $(node -v)"
 echo "NPM version: $(npm -v)"
+echo "Python version: $(python --version 2>&1 || echo 'Python not available')"
 echo "Current directory: $(pwd)"
+echo "Files in directory: $(ls -la)"
 echo "=================================="
+
+# Fix line endings if needed
+if [[ -f package.json ]]; then
+  echo "Fixing line endings in package.json if needed"
+  dos2unix package.json 2>/dev/null || echo "dos2unix not available, skipping"
+fi
 
 # Install dependencies
 echo "===== INSTALLING DEPENDENCIES ====="
 export NODE_ENV=production
-npm ci --production=false --no-optional
+npm ci --no-audit --no-fund
 echo "Dependencies installed successfully!"
 echo "=================================="
 
@@ -29,8 +37,26 @@ npm run build
 echo "Build completed successfully!"
 echo "=================================="
 
-# Copy necessary files for deployment
+# Ensure the output directory exists
+if [[ ! -d out ]]; then
+  echo "OUTPUT DIRECTORY: Directory structure after build"
+  ls -la
+  
+  # If .next exists but not out, we need to export
+  if [[ -d .next ]]; then
+    echo "Found .next directory, exporting to static HTML"
+    npm run export || npx next export
+  else
+    echo "ERROR: Build output directory not found. Build may have failed."
+    exit 1
+  fi
+fi
+
+# Validate deployment files
 echo "===== PREPARING FOR DEPLOYMENT ====="
-cp -r public .next/
+echo "Final deployment directory structure:"
+find out -type f | sort | head -n 20
+echo "..."
+
 echo "Deployment files prepared successfully!"
 echo "===================================" 

@@ -1,7 +1,8 @@
 [build]
   base = "frontend/"
-  publish = ".next"
+  publish = "out"
   command = "chmod +x netlify-build.sh && ./netlify-build.sh"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ./frontend/"
 
 [build.environment]
   # Node configuration
@@ -24,6 +25,12 @@
   # Skip Next.js plugin since we're handling it manually
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
   
+  # Set NODE_ENV
+  NODE_ENV = "production"
+  
+  # Add build flags for Next.js
+  NEXT_TELEMETRY_DISABLED = "1"
+  
 # Try to bypass cache issues
 [build.processing]
   skip_processing = true
@@ -32,12 +39,15 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/api/:splat"
-  status = 200
-
+# Handle 404s correctly
 [[redirects]]
   from = "/*"
   to = "/index.html"
+  status = 200
+  force = false
+
+# Proper API redirects if needed
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
   status = 200 
