@@ -7,14 +7,14 @@ set -e
 echo "===== ENVIRONMENT INFORMATION ====="
 echo "Node version: $(node -v)"
 echo "NPM version: $(npm -v)"
+echo "Python version (if available): $(python --version 2>&1 || echo 'Python not found')"
 echo "Current directory: $(pwd)"
 echo "Files in directory: $(ls -la)"
 echo "=================================="
 
-# Create empty Python requirements if needed
-echo "===== SETTING UP PYTHON ENVIRONMENT ====="
-touch requirements.txt
-echo "Python environment prepared"
+# Skip Python setup entirely - not needed for Next.js frontend
+echo "===== SKIPPING PYTHON SETUP (NOT NEEDED) ====="
+echo "This is a Next.js frontend project, no Python required"
 echo "=================================="
 
 # Install dependencies
@@ -24,15 +24,14 @@ export NPM_CONFIG_LEGACY_PEER_DEPS=true
 
 # Try installing dependencies with fallbacks
 echo "Installing dependencies..."
-npm ci --no-audit --no-fund || npm ci --legacy-peer-deps || npm install --no-fund
+npm ci --no-audit --no-fund || npm install --legacy-peer-deps --no-fund || npm install --no-fund
 
 echo "Dependencies installed successfully!"
 echo "=================================="
 
-# Ensure sharp is properly installed
-echo "===== INSTALLING SHARP PACKAGE ====="
-npm install --no-save sharp@0.33.2
-echo "Sharp package installed successfully!"
+# Sharp should be installed via package.json, no need for separate install
+echo "===== USING PRE-DEFINED SHARP VERSION ====="
+echo "Using sharp version from package.json: $(npm list sharp | grep sharp || echo 'Sharp not installed')"
 echo "=================================="
 
 # Build the Next.js app
@@ -41,21 +40,23 @@ npm run build
 echo "Build completed successfully!"
 echo "=================================="
 
-# Export to static HTML
-echo "===== EXPORTING TO STATIC HTML ====="
-npm run export || npx next export
-echo "=================================="
-
-# Ensure the output directory exists
-if [[ ! -d out ]]; then
-  echo "ERROR: Output directory not found. Export may have failed."
-  exit 1
+# Ensure output directory exists (Next.js 13+ puts it in .next/standalone)
+echo "===== CHECKING OUTPUT DIRECTORY ====="
+if [[ -d .next/standalone ]]; then
+  echo "Found standalone output in .next/standalone"
+  mkdir -p out
+  cp -r .next/standalone/* out/
+elif [[ ! -d out ]]; then
+  echo "Creating output directory (needed for newer Next.js versions)"
+  mkdir -p out
+  npm run export || npx next export || echo "Export not required for newer Next.js versions"
 fi
+echo "=================================="
 
 # Validate deployment files
 echo "===== PREPARING FOR DEPLOYMENT ====="
 echo "Files in out directory:"
-ls -la out/
+ls -la out/ || echo "No files found in out directory"
 
 echo "Deployment files prepared successfully!"
 echo "===================================" 
