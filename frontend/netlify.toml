@@ -4,13 +4,6 @@
   publish = "out"
   command = "npm install && npm run build"
 
-# Git settings
-[git]
-  # Ensure proper reference to master branch
-  repo = "https://github.com/Blackbird7771/dogid.git"
-  branch = "master"
-  clean_urls = true
-
 # Redirects for SPA
 [[redirects]]
   from = "/*"
