@@ -1,11 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Next.js 14 needs this for static exports
-  output: 'export',
-  // Disable image optimization for static export
+  // Vercel will handle the output
+  // output: 'export', // Commented out for Vercel deployment
+  // Image optimization can be enabled on Vercel
   images: {
-    unoptimized: true,
     domains: ['images.unsplash.com'],
   },
   // Environment variables
@@ -14,7 +13,7 @@ const nextConfig = {
   },
   // Disable source maps in production for better performance
   productionBrowserSourceMaps: false,
-  // Add trailing slash for better static hosting compatibility
+  // Add trailing slash for better compatibility
   trailingSlash: true,
 }
 
