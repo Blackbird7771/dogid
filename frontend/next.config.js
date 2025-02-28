@@ -1,10 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Vercel will handle the output
-  // output: 'export', // Commented out for Vercel deployment
-  // Image optimization can be enabled on Vercel
+  output: 'export', // Enable static export for Netlify
   images: {
+    unoptimized: true, // Required for static export
     domains: ['images.unsplash.com'],
   },
   // Environment variables
