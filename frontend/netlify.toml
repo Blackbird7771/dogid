@@ -1,15 +1,21 @@
 # Basic build settings
 [build]
-  base = \
-frontend/\
-  publish = \
-out\
+  base = "frontend/"
+  publish = "out"
   command = "npm install --no-optional && npm run build"
 
 [build.environment]
   NODE_VERSION = "18.17.0"
   NODE_ENV = "production"
 
+# Git settings
+[git]
+  # Ensure proper reference to master branch
+  repo = "https://github.com/Blackbird7771/dogid.git"
+  branch = "master"
+  clean_urls = true
+
+# Redirects for SPA
 [[redirects]]
   from = "/*"
   to = "/index.html"
