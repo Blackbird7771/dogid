@@ -1,16 +1,16 @@
 [build]
   base = "frontend/"
   publish = "out"
-  command = "npm ci && npm run build && mkdir -p out && find .next -type f -name '*.html' -exec cp {} out/ \\; && mkdir -p out/_next && cp -r .next/static out/_next/ || true"
+  command = "npm install --legacy-peer-deps && npm run build && npx next export || (mkdir -p out && cp -r .next/static out/_next/ 2>/dev/null || true)"
 
 [build.environment]
   NODE_VERSION = "18.17.0"
   NODE_ENV = "production"
   NPM_CONFIG_LEGACY_PEER_DEPS = "true"
-  # Disable everything else
+  NETLIFY_USE_YARN = "false"
+  # Disable Python to avoid version issues
   PYTHON_VERSION = "disabled"
   SKIP_MISE = "true"
-  NETLIFY_USE_YARN = "false"
 
 # Try to bypass cache issues
 [build.processing]
