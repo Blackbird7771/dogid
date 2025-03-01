@@ -18,6 +18,10 @@ if ! command -v mise &> /dev/null; then
   export PATH="$HOME/.local/bin:$PATH"
 fi
 
+# Configure mise to use precompiled Python
+echo "Configuring mise to use precompiled Python..."
+~/.local/bin/mise settings set python.compile false || echo "Failed to set mise settings, continuing..."
+
 # List available Python versions
 echo "Available Python versions in mise:"
 ~/.local/bin/mise list-all python | grep "3.8" || echo "No Python 3.8.x versions found"
@@ -31,8 +35,8 @@ if ! command -v python &> /dev/null; then
   echo "Python not found, installing Python 3.8 directly..."
   # Try to use pyenv if available
   if command -v pyenv &> /dev/null; then
-    pyenv install 3.8.12 -s
-    pyenv global 3.8.12
+    pyenv install 3.8 -s
+    pyenv global 3.8
   else
     # Fall back to system Python
     echo "Using system Python if available"

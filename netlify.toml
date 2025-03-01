@@ -7,7 +7,7 @@
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
   NODE_VERSION = "18.17.0"
   NPM_FLAGS = "--legacy-peer-deps"
-  PYTHON_VERSION = "3.8.12"
+  PYTHON_VERSION = "3.8"
   PATH = "~/.local/bin:$PATH"
   PIP_DISABLE_PIP_VERSION_CHECK = "1"
   NETLIFY_USE_MISE = "true"
