@@ -18,9 +18,26 @@ if ! command -v mise &> /dev/null; then
   export PATH="$HOME/.local/bin:$PATH"
 fi
 
+# List available Python versions
+echo "Available Python versions in mise:"
+~/.local/bin/mise list-all python | grep "3.8" || echo "No Python 3.8.x versions found"
+
 # Install tools with mise
 echo "Installing tools with mise..."
-mise install || echo "Failed to install tools with mise, continuing..."
+~/.local/bin/mise install || echo "Failed to install tools with mise, continuing..."
+
+# Try to install Python directly if mise fails
+if ! command -v python &> /dev/null; then
+  echo "Python not found, installing Python 3.8 directly..."
+  # Try to use pyenv if available
+  if command -v pyenv &> /dev/null; then
+    pyenv install 3.8.12 -s
+    pyenv global 3.8.12
+  else
+    # Fall back to system Python
+    echo "Using system Python if available"
+  fi
+fi
 
 # Ensure Python and pip are available
 echo "Setting up Python..."
