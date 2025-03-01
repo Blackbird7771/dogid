@@ -39,57 +39,112 @@ console.log('Copying CSS files...');
 const srcDir = path.join(__dirname, '..', 'src');
 findAndCopyCssFiles(srcDir, outDir);
 
-// Generate a CSS file in the output directory if it doesn't exist
-const cssOutDir = path.join(outDir, 'styles');
-if (!fs.existsSync(cssOutDir)) {
-  fs.mkdirSync(cssOutDir, { recursive: true });
+// Copy the globals.css file directly from src to ensure it's available
+const srcGlobalsCss = path.join(srcDir, 'app', 'globals.css');
+const stylesDir = path.join(outDir, 'styles');
+if (!fs.existsSync(stylesDir)) {
+  fs.mkdirSync(stylesDir, { recursive: true });
 }
 
-const cssFilePath = path.join(cssOutDir, 'globals.css');
-if (!fs.existsSync(cssFilePath)) {
-  console.log('Creating globals.css file...');
-  const cssContent = `
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-    }
-    
-    .btn {
-      display: inline-block;
-      padding: 0.5rem 1rem;
-      border-radius: 0.25rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background-color 0.2s ease-in-out;
-    }
-    
-    .btn-primary {
-      background-color: #3b82f6;
-      color: white;
-    }
-    
-    .btn-primary:hover {
-      background-color: #2563eb;
-    }
-    
-    .card {
-      background-color: white;
-      border-radius: 0.5rem;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-    }
-  `;
-  fs.writeFileSync(cssFilePath, cssContent);
+if (fs.existsSync(srcGlobalsCss)) {
+  console.log('Copying globals.css from source...');
+  fs.copyFileSync(srcGlobalsCss, path.join(stylesDir, 'globals.css'));
+} else {
+  console.log('Source globals.css not found, creating a fallback...');
+  // Generate a CSS file in the output directory if it doesn't exist
+  const cssFilePath = path.join(stylesDir, 'globals.css');
+  if (!fs.existsSync(cssFilePath)) {
+    console.log('Creating globals.css file...');
+    const cssContent = `
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+      
+      :root {
+        --primary: #4f46e5;
+        --primary-dark: #4338ca;
+        --secondary: #10b981;
+        --secondary-dark: #059669;
+        --background: #ffffff;
+        --foreground: #111827;
+        --muted: #f3f4f6;
+        --muted-foreground: #6b7280;
+        --accent: #ede9fe;
+        --accent-foreground: #6d28d9;
+        --border: #e5e7eb;
+        --input: #e5e7eb;
+        --ring: #e5e7eb;
+        --radius: 0.5rem;
+      }
+      
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        background-color: var(--background);
+        color: var(--foreground);
+      }
+      
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+      
+      .btn {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s ease-in-out;
+      }
+      
+      .btn-primary {
+        background-color: var(--primary);
+        color: white;
+      }
+      
+      .btn-primary:hover {
+        background-color: var(--primary-dark);
+      }
+      
+      .card {
+        background-color: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .animate-fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+      }
+      
+      .animate-slide-up {
+        animation: slideUp 0.5s ease-in-out;
+      }
+      
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      
+      @keyframes slideUp {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+    `;
+    fs.writeFileSync(cssFilePath, cssContent);
+  }
 }
 
 // If no index.html exists, create one
@@ -130,9 +185,20 @@ console.log('Adding CSS links to HTML files...');
 const htmlFiles = findAllHtmlFiles(outDir);
 htmlFiles.forEach(file => {
   let content = fs.readFileSync(file, 'utf8');
+  
+  // Check if the file already has a link to our CSS
   if (!content.includes('<link rel="stylesheet" href="/styles/globals.css">')) {
+    // Insert our CSS link before the closing head tag
     content = content.replace('</head>', '<link rel="stylesheet" href="/styles/globals.css">\n</head>');
     fs.writeFileSync(file, content);
+    console.log(`Added CSS link to ${file}`);
+  }
+  
+  // Fix any relative paths that might be broken
+  if (content.includes('href="/_next/')) {
+    content = content.replace(/href="\/_next\//g, 'href="/_next/');
+    fs.writeFileSync(file, content);
+    console.log(`Fixed relative paths in ${file}`);
   }
 });
 
