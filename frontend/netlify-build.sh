@@ -11,6 +11,21 @@ env | grep -v PASSWORD | grep -v TOKEN | grep -v SECRET | sort
 # Make script executable
 chmod +x ./netlify-build.sh
 
+# Install mise if not available
+if ! command -v mise &> /dev/null; then
+  echo "Installing mise..."
+  curl https://mise.jdx.dev/install.sh | sh
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+
+# Install tools with mise
+echo "Installing tools with mise..."
+mise install || echo "Failed to install tools with mise, continuing..."
+
+# Ensure Python and pip are available
+echo "Setting up Python..."
+python -m pip install --upgrade pip setuptools wheel || echo "Failed to upgrade pip, continuing..."
+
 # Clean npm cache and node_modules to avoid any issues
 echo "Cleaning npm cache and node_modules..."
 npm cache clean --force || echo "Failed to clean npm cache, continuing..."
