@@ -1,3 +1,5 @@
+'use client';
+
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -6,23 +8,17 @@ import Button from '@/components/ui/Button';
 export default function AboutPage() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
         className="text-center mb-12"
       >
         <h1 className="text-4xl font-bold text-foreground mb-4">About Dog Identifier</h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
           Discover the story behind our dog breed identification project
         </p>
-      </motion.div>
+      </div>
 
       <div className="space-y-12">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+        <div 
           className="grid md:grid-cols-2 gap-8 items-center"
         >
           <div>
@@ -45,13 +41,9 @@ export default function AboutPage() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
+        <div>
           <h2 className="text-2xl font-semibold mb-4">How It Works</h2>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-card border border-border rounded-lg p-6">
@@ -82,13 +74,9 @@ export default function AboutPage() {
               </p>
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
+        <div>
           <h2 className="text-2xl font-semibold mb-4">Technology Behind the Tool</h2>
           <div className="bg-card border border-border rounded-lg p-6">
             <p className="text-muted-foreground mb-4">
@@ -107,12 +95,9 @@ export default function AboutPage() {
               The system continues to improve through regular model updates and training on new data.
             </p>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
+        <div 
           className="bg-primary/5 border border-primary/20 rounded-lg p-8 text-center"
         >
           <h2 className="text-2xl font-semibold mb-4">Ready to Try It?</h2>
@@ -122,7 +107,7 @@ export default function AboutPage() {
           <Link href="/upload" passHref>
             <Button>Try Dog Identifier Now</Button>
           </Link>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

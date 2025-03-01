@@ -61,14 +61,18 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     }
     
     return (
-      <motion.button
+      <button
         ref={ref}
-        whileTap={{ scale: 0.95 }}
         className={buttonClasses}
         {...props}
       >
-        {children}
-      </motion.button>
+        <motion.div
+          whileTap={{ scale: 0.95 }}
+          className="flex items-center justify-center w-full h-full"
+        >
+          {children}
+        </motion.div>
+      </button>
     );
   }
 );

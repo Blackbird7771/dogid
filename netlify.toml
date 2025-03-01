@@ -1,14 +1,21 @@
 [build]
   base = "frontend"
-  command = "bash ./netlify-build.sh"
-  publish = "out"
+  command = "npm install --legacy-peer-deps && npm run build"
+  publish = "frontend/.next"
 
 [build.environment]
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
-  NODE_VERSION = "18"
+  NODE_VERSION = "18.17.0"
   NPM_FLAGS = "--legacy-peer-deps"
-  PYTHON_VERSION = "3.8"
+  # Disable Python completely
+  PYTHON_VERSION = "disabled"
   NETLIFY_USE_MISE = "false"
+
+# Handle 404s correctly
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
 
 # Remove all plugins to avoid any Python dependencies
 # [[plugins]]
