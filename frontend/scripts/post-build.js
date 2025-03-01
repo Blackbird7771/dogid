@@ -34,6 +34,64 @@ if (fs.existsSync(staticDir)) {
 console.log('Copying HTML files...');
 findAndCopyHtmlFiles(nextDir, outDir);
 
+// Copy CSS files from src to out
+console.log('Copying CSS files...');
+const srcDir = path.join(__dirname, '..', 'src');
+findAndCopyCssFiles(srcDir, outDir);
+
+// Generate a CSS file in the output directory if it doesn't exist
+const cssOutDir = path.join(outDir, 'styles');
+if (!fs.existsSync(cssOutDir)) {
+  fs.mkdirSync(cssOutDir, { recursive: true });
+}
+
+const cssFilePath = path.join(cssOutDir, 'globals.css');
+if (!fs.existsSync(cssFilePath)) {
+  console.log('Creating globals.css file...');
+  const cssContent = `
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s ease-in-out;
+    }
+    
+    .btn-primary {
+      background-color: #3b82f6;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: #2563eb;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+  `;
+  fs.writeFileSync(cssFilePath, cssContent);
+}
+
 // If no index.html exists, create one
 if (!fs.existsSync(path.join(outDir, 'index.html'))) {
   console.log('No index.html found. Creating one...');
@@ -44,11 +102,39 @@ if (!fs.existsSync(path.join(outDir, 'index.html'))) {
     const content = fs.readFileSync(path.join(outDir, files[0]), 'utf8');
     fs.writeFileSync(path.join(outDir, 'index.html'), content);
   } else {
-    // Create a fallback index
-    const fallbackHtml = '<html><head><title>DogID</title></head><body><h1>DogID</h1><p>Site is being built.</p></body></html>';
+    // Create a fallback index with CSS link
+    const fallbackHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>DogID</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/styles/globals.css">
+      </head>
+      <body>
+        <div class="container">
+          <h1>DogID</h1>
+          <p>Site is being built. Please check back later.</p>
+          <button class="btn btn-primary">Go Home</button>
+        </div>
+        <script src="/_next/static/chunks/main.js"></script>
+      </body>
+      </html>
+    `;
     fs.writeFileSync(path.join(outDir, 'index.html'), fallbackHtml);
   }
 }
+
+// Add a link to the CSS file in all HTML files
+console.log('Adding CSS links to HTML files...');
+const htmlFiles = findAllHtmlFiles(outDir);
+htmlFiles.forEach(file => {
+  let content = fs.readFileSync(file, 'utf8');
+  if (!content.includes('<link rel="stylesheet" href="/styles/globals.css">')) {
+    content = content.replace('</head>', '<link rel="stylesheet" href="/styles/globals.css">\n</head>');
+    fs.writeFileSync(file, content);
+  }
+});
 
 console.log('Post-build process completed successfully!');
 
@@ -88,4 +174,44 @@ function findAndCopyHtmlFiles(dir, outDir) {
       console.log(`Copied ${srcPath} to ${destPath}`);
     }
   }
+}
+
+// Helper function to find and copy CSS files
+function findAndCopyCssFiles(dir, outDir) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  
+  for (const entry of entries) {
+    const srcPath = path.join(dir, entry.name);
+    
+    if (entry.isDirectory()) {
+      findAndCopyCssFiles(srcPath, outDir);
+    } else if (entry.name.endsWith('.css')) {
+      // For CSS files, copy to the styles directory in out
+      const stylesDir = path.join(outDir, 'styles');
+      if (!fs.existsSync(stylesDir)) {
+        fs.mkdirSync(stylesDir, { recursive: true });
+      }
+      const destPath = path.join(stylesDir, entry.name);
+      fs.copyFileSync(srcPath, destPath);
+      console.log(`Copied ${srcPath} to ${destPath}`);
+    }
+  }
+}
+
+// Helper function to find all HTML files
+function findAllHtmlFiles(dir) {
+  const result = [];
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    
+    if (entry.isDirectory()) {
+      result.push(...findAllHtmlFiles(fullPath));
+    } else if (entry.name.endsWith('.html')) {
+      result.push(fullPath);
+    }
+  }
+  
+  return result;
 } 
