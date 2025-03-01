@@ -1,0 +1,16 @@
+# Basic build settings
+[build]
+  base = "frontend/"
+  publish = "out"
+  command = "npm install --no-optional && npm run build && npm run export"
+
+# Only essential environment variables
+[build.environment]
+  NODE_VERSION = "18.17.0"
+  NODE_ENV = "production"
+
+# Redirects for SPA
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200 
