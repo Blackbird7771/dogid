@@ -1,16 +1,12 @@
 #!/bin/bash
 
-# Disable Python-related environment variables
-export PYTHON_ENABLE=0
-export NETLIFY_USE_MISE=false
-unset PYTHON_VERSION
-
 # Print environment information
 echo "Node version: $(node -v)"
 echo "NPM version: $(npm -v)"
+echo "Python version: $(python --version 2>&1 || echo 'Python not found')"
 echo "Working directory: $(pwd)"
 echo "Environment variables:"
-env | grep -v PASSWORD | grep -v TOKEN | sort
+env | grep -v PASSWORD | grep -v TOKEN | grep -v SECRET | sort
 
 # Make script executable
 chmod +x ./netlify-build.sh
@@ -66,4 +62,4 @@ else
   ls -la out/
 fi
 
-echo "Netlify build completed successfully!" 
+echo "Netlify build completed successfully!"
