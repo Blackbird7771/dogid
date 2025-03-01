@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export || (mkdir -p out && echo '<html><head><title>DogID</title></head><body><h1>DogID</h1><p>Site is being built.</p></body></html>' > out/index.html)",
+    "build": "next build && mkdir -p out && cp -r .next/static out/_next/ && find .next -name '*.html' -exec cp {} out/ \\; || (mkdir -p out && echo '<html><head><title>DogID</title></head><body><h1>DogID</h1><p>Site is being built.</p></body></html>' > out/index.html)",
     "start": "next start",
     "lint": "next lint"
   },
