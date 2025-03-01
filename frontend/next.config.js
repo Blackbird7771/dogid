@@ -1,19 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: 'export', // Enable static export for Netlify
+  // Disable image optimization for Netlify compatibility
   images: {
-    unoptimized: true, // Required for static export
-    domains: ['images.unsplash.com'],
+    domains: ['images.dog.ceo', 'dog.ceo'],
+    unoptimized: true,
   },
+  output: 'export',
+  // Ensure trailing slashes for better compatibility
+  trailingSlash: true,
   // Environment variables
   env: {
-    BACKEND_API_URL: process.env.BACKEND_API_URL || 'http://localhost:8000',
+    API_URL: process.env.API_URL || 'https://api.dogid.app',
   },
   // Disable source maps in production for better performance
   productionBrowserSourceMaps: false,
-  // Add trailing slash for better compatibility
-  trailingSlash: true,
 }
 
 module.exports = nextConfig 
