@@ -1,5 +1,0 @@
-# No specific Python dependencies required
-
-pip>=21.0.0
-setuptools>=58.0.0
-wheel>=0.37.0
